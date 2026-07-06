@@ -1,0 +1,5 @@
+<idea-plugin>
+    <resource-bundle>messages.ShardBundle</resource-bundle>
+
+    <depends>com.intellij.modules.platform</depends>
+</idea-plugin>
