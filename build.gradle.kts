@@ -1,4 +1,3 @@
-import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
 plugins {
@@ -32,19 +31,8 @@ intellijPlatform {
     pluginConfiguration {
         id = providers.gradleProperty("plugin.id")
         name = providers.gradleProperty("plugin.name")
-        version = providers.gradleProperty("plugin.version")
-
         description = providers.fileContents(layout.projectDirectory.file("DESCRIPTION.md")).asText
             .map(::markdownToHTML)
-
-        changeNotes = provider {
-            changelog.renderItem(
-                (changelog.getOrNull(version.get()) ?: changelog.getUnreleased())
-                    .withHeader(false)
-                    .withEmptySections(false),
-                Changelog.OutputType.HTML
-            )
-        }
 
         vendor {
             name = providers.gradleProperty("plugin.vendor.name")
@@ -61,4 +49,8 @@ intellijPlatform {
             recommended()
         }
     }
+}
+
+changelog {
+    header = provider { version.get() }
 }
