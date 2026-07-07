@@ -1,5 +1,6 @@
 package dev.digamma.shard.ex
 
+import com.intellij.openapi.fileEditor.impl.EditorComposite
 import com.intellij.openapi.fileEditor.impl.EditorWindow
 import com.intellij.openapi.fileEditor.impl.EditorWindowHolder
 import com.intellij.openapi.ui.Splitter
@@ -8,6 +9,7 @@ import dev.digamma.shard.ShardSettings
 import dev.digamma.shard.util.Side
 import java.awt.Component
 import java.awt.Point
+import javax.swing.SwingConstants
 
 val EditorWindow.component
     get() = tabbedPane.component
@@ -74,4 +76,21 @@ fun EditorWindow.getNearestNeighbor(side: Side): EditorWindow? {
     }
 
     return (target as? EditorWindowHolder)?.editorWindow
+}
+
+fun EditorWindow.splitComposite(composite: EditorComposite, side: Side, move: Boolean) {
+    if (move) closeFile(composite.file, disposeIfNeeded = false, transferFocus = false)
+
+    val window = split(
+        focusNew = true,
+        forceSplit = true,
+        virtualFile = composite.file,
+        fileIsSecondaryComponent = side == Side.RIGHT || side == Side.BOTTOM,
+        orientation = when (side) {
+            Side.LEFT, Side.RIGHT -> SwingConstants.VERTICAL
+            Side.TOP, Side.BOTTOM -> SwingConstants.HORIZONTAL
+        }
+    ) ?: return
+
+    if (composite.isPinned) window.setFilePinned(composite.file, true)
 }

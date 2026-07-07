@@ -6,11 +6,17 @@ import com.intellij.openapi.extensions.PluginId
 import dev.digamma.shard.action.FocusSplitterAction
 import dev.digamma.shard.action.MoveSplitterAction
 import dev.digamma.shard.action.ShardAction
+import dev.digamma.shard.action.SplitAction
+import org.intellij.lang.annotations.Language
 
 object ShardActionManager {
     private fun registerAction(id: String, action: ShardAction) {
         @Suppress("UnresolvedPluginConfigReference")
         ActionManager.getInstance().registerAction("Shard.$id", action, PluginId.getId("dev.digamma.shard"))
+    }
+
+    private fun replaceAction(@Language("devkit-action-id") id: String, action: ShardAction) {
+        ActionManager.getInstance().replaceAction(id, action)
     }
 
     object StartupActivity : AppLifecycleListener {
@@ -24,6 +30,16 @@ object ShardActionManager {
             registerAction("MoveSplitter.Top", MoveSplitterAction.TOP)
             registerAction("MoveSplitter.Right", MoveSplitterAction.RIGHT)
             registerAction("MoveSplitter.Bottom", MoveSplitterAction.BOTTOM)
+
+            registerAction("Split.Left", SplitAction.LEFT)
+            registerAction("Split.Top", SplitAction.TOP)
+            replaceAction("SplitVertically", SplitAction.RIGHT)
+            replaceAction("SplitHorizontally", SplitAction.BOTTOM)
+
+            registerAction("SplitAndMove.Left", SplitAction.MOVE_LEFT)
+            registerAction("SplitAndMove.Top", SplitAction.MOVE_TOP)
+            replaceAction("MoveTabRight", SplitAction.MOVE_RIGHT)
+            replaceAction("MoveTabDown", SplitAction.MOVE_BOTTOM)
         }
     }
 }
