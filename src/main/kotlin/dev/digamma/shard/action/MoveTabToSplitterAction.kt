@@ -7,7 +7,7 @@ import dev.digamma.shard.ex.moveComposite
 import dev.digamma.shard.ex.splitComposite
 import dev.digamma.shard.util.Side
 
-class MoveTabToSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
+abstract class MoveTabToSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
     override fun doUpdate(event: AnActionEvent) =
         event.editorWindow.let {
             when {
@@ -18,20 +18,19 @@ class MoveTabToSplitterAction(private val side: Side, template: Template) : Shar
         }
 
     override fun doPerform(event: AnActionEvent) {
+        val project = event.project ?: return
+
         event.editorWindow?.run {
             val composite = getSelectedComposite(false) ?: return
             val target = getNeighbor(side)
 
-            if (target != null) moveComposite(composite, target)
+            if (target != null) moveComposite(project, composite, target)
             else if (tabCount > 1) splitComposite(composite, side, true)
         }
     }
 
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        val LEFT = MoveTabToSplitterAction(Side.LEFT, Template("action.move.tab.to.splitter.left.text"))
-        val TOP = MoveTabToSplitterAction(Side.TOP, Template("action.move.tab.to.splitter.top.text"))
-        val RIGHT = MoveTabToSplitterAction(Side.RIGHT, Template("action.move.tab.to.splitter.right.text"))
-        val BOTTOM = MoveTabToSplitterAction(Side.BOTTOM, Template("action.move.tab.to.splitter.bottom.text"))
-    }
+    class Left : MoveTabToSplitterAction(Side.LEFT, Template("action.move.tab.to.splitter.left.text"))
+    class Top : MoveTabToSplitterAction(Side.TOP, Template("action.move.tab.to.splitter.top.text"))
+    class Right : MoveTabToSplitterAction(Side.RIGHT, Template("action.move.tab.to.splitter.right.text"))
+    class Bottom : MoveTabToSplitterAction(Side.BOTTOM, Template("action.move.tab.to.splitter.bottom.text"))
 }

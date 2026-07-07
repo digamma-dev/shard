@@ -7,7 +7,7 @@ import dev.digamma.shard.ex.replaceComponent
 import dev.digamma.shard.ex.splitter
 import dev.digamma.shard.util.Side
 
-class MoveSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
+abstract class MoveSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
     override fun doUpdate(event: AnActionEvent) =
         event.editorWindow.let {
             when {
@@ -33,11 +33,8 @@ class MoveSplitterAction(private val side: Side, template: Template) : ShardActi
         source.requestFocus(true)
     }
 
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        val LEFT = MoveSplitterAction(Side.LEFT, Template("action.move.splitter.left.text"))
-        val TOP = MoveSplitterAction(Side.TOP, Template("action.move.splitter.top.text"))
-        val RIGHT = MoveSplitterAction(Side.RIGHT, Template("action.move.splitter.right.text"))
-        val BOTTOM = MoveSplitterAction(Side.BOTTOM, Template("action.move.splitter.bottom.text"))
-    }
+    class Left : MoveSplitterAction(Side.LEFT, Template("action.move.splitter.left.text"))
+    class Top : MoveSplitterAction(Side.TOP, Template("action.move.splitter.top.text"))
+    class Right : MoveSplitterAction(Side.RIGHT, Template("action.move.splitter.right.text"))
+    class Bottom : MoveSplitterAction(Side.BOTTOM, Template("action.move.splitter.bottom.text"))
 }

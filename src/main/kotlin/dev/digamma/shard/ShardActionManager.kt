@@ -18,35 +18,35 @@ object ShardActionManager {
 
     object StartupActivity : AppLifecycleListener {
         override fun appFrameCreated(commandLineArgs: List<String?>) {
-            registerAction("FocusSplitter.Left", FocusSplitterAction.LEFT)
-            registerAction("FocusSplitter.Top", FocusSplitterAction.TOP)
-            registerAction("FocusSplitter.Right", FocusSplitterAction.RIGHT)
-            registerAction("FocusSplitter.Bottom", FocusSplitterAction.BOTTOM)
+            registerAction("FocusSplitter.Left", FocusSplitterAction.Left())
+            registerAction("FocusSplitter.Top", FocusSplitterAction.Top())
+            registerAction("FocusSplitter.Right", FocusSplitterAction.Right())
+            registerAction("FocusSplitter.Bottom", FocusSplitterAction.Bottom())
 
-            registerAction("MoveSplitter.Left", MoveSplitterAction.LEFT)
-            registerAction("MoveSplitter.Top", MoveSplitterAction.TOP)
-            registerAction("MoveSplitter.Right", MoveSplitterAction.RIGHT)
-            registerAction("MoveSplitter.Bottom", MoveSplitterAction.BOTTOM)
+            registerAction("MoveSplitter.Left", MoveSplitterAction.Left())
+            registerAction("MoveSplitter.Top", MoveSplitterAction.Top())
+            registerAction("MoveSplitter.Right", MoveSplitterAction.Right())
+            registerAction("MoveSplitter.Bottom", MoveSplitterAction.Bottom())
 
-            registerAction("Split.Left", SplitAction.LEFT)
-            registerAction("Split.Top", SplitAction.TOP)
-            replaceAction("SplitVertically", SplitAction.RIGHT)
-            replaceAction("SplitHorizontally", SplitAction.BOTTOM)
+            registerAction("Split.Left", SplitAction.Left())
+            registerAction("Split.Top", SplitAction.Top())
+            replaceAction("SplitVertically", SplitAction.Right())
+            replaceAction("SplitHorizontally", SplitAction.Bottom())
 
-            registerAction("SplitAndMove.Left", SplitAction.MOVE_LEFT)
-            registerAction("SplitAndMove.Top", SplitAction.MOVE_TOP)
-            replaceAction("MoveTabRight", SplitAction.MOVE_RIGHT)
-            replaceAction("MoveTabDown", SplitAction.MOVE_BOTTOM)
+            registerAction("SplitAndMove.Left", SplitAction.MoveLeft())
+            registerAction("SplitAndMove.Top", SplitAction.MoveTop())
+            replaceAction("MoveTabRight", SplitAction.MoveRight())
+            replaceAction("MoveTabDown", SplitAction.MoveBottom())
 
-            registerAction("MoveTab.Forward", MoveTabAction.BACKWARD)
-            registerAction("MoveTab.Backward", MoveTabAction.FORWARD)
-            registerAction("MoveTab.Start", MoveTabAction.START)
-            registerAction("MoveTab.End", MoveTabAction.END)
+            registerAction("MoveTab.Forward", MoveTabAction.Backward())
+            registerAction("MoveTab.Backward", MoveTabAction.Forward())
+            registerAction("MoveTab.Start", MoveTabAction.Start())
+            registerAction("MoveTab.End", MoveTabAction.End())
 
-            registerAction("MoveTabToSplitter.Left", MoveTabToSplitterAction.LEFT)
-            registerAction("MoveTabToSplitter.Top", MoveTabToSplitterAction.TOP)
-            registerAction("MoveTabToSplitter.Right", MoveTabToSplitterAction.RIGHT)
-            registerAction("MoveTabToSplitter.Bottom", MoveTabToSplitterAction.BOTTOM)
+            registerAction("MoveTabToSplitter.Left", MoveTabToSplitterAction.Left())
+            registerAction("MoveTabToSplitter.Top", MoveTabToSplitterAction.Top())
+            registerAction("MoveTabToSplitter.Right", MoveTabToSplitterAction.Right())
+            registerAction("MoveTabToSplitter.Bottom", MoveTabToSplitterAction.Bottom())
         }
     }
 }

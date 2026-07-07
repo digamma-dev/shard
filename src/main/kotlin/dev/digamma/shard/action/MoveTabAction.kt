@@ -3,20 +3,19 @@ package dev.digamma.shard.action
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.advanced.AdvancedSettings
 import dev.digamma.shard.ex.allowsReordering
+import dev.digamma.shard.ex.visibleInfos
 import java.util.Collections.rotate
 
-@Suppress("UnstableApiUsage")
-class MoveTabAction(private val direction: Direction, template: Template) : ShardAction(template) {
+abstract class MoveTabAction(private val direction: Direction, template: Template) : ShardAction(template) {
     enum class Direction { BACKWARD, FORWARD, START, END }
 
     private val groupPinnedTabs
         get() = AdvancedSettings.getBoolean("editor.keep.pinned.tabs.on.left")
 
-
     override fun doUpdate(event: AnActionEvent): State {
         val tabs = event.editorTabs?.takeIf { it.allowsReordering } ?: return State.HIDDEN
         val source = tabs.targetInfo!!
-        val target = tabs.getVisibleInfos().run {
+        val target = tabs.visibleInfos.run {
             // Ensure that there is a tab after the current one in the direction of movement
             when (direction) {
                 Direction.BACKWARD, Direction.START -> indexOf(source).dec().takeUnless { it < 0 }
@@ -32,8 +31,9 @@ class MoveTabAction(private val direction: Direction, template: Template) : Shar
     override fun doPerform(event: AnActionEvent) {
         val tabs = event.editorTabs ?: return
         val source = tabs.targetInfo!!
+        val order = tabs.visibleInfos.toMutableList()
 
-        with(tabs.getVisibleInfos() as? MutableList ?: return) {
+        with(order) {
             val index = indexOf(source)
 
             when (direction) {
@@ -57,15 +57,11 @@ class MoveTabAction(private val direction: Direction, template: Template) : Shar
             }
         }
 
-        tabs.resetTabsCache()
-        tabs.revalidateAndRepaint(false)
+        tabs.sortTabs(compareBy { order.indexOf(it) })
     }
 
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        val BACKWARD = MoveTabAction(Direction.BACKWARD, Template("action.move.tab.backward.text"))
-        val FORWARD = MoveTabAction(Direction.FORWARD, Template("action.move.tab.forward.text"))
-        val START = MoveTabAction(Direction.START, Template("action.move.tab.start.text"))
-        val END = MoveTabAction(Direction.END, Template("action.move.tab.end.text"))
-    }
+    class Backward : MoveTabAction(Direction.BACKWARD, Template("action.move.tab.backward.text"))
+    class Forward : MoveTabAction(Direction.FORWARD, Template("action.move.tab.forward.text"))
+    class Start : MoveTabAction(Direction.START, Template("action.move.tab.start.text"))
+    class End : MoveTabAction(Direction.END, Template("action.move.tab.end.text"))
 }

@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import dev.digamma.shard.ex.getNeighbor
 import dev.digamma.shard.util.Side
 
-class FocusSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
+abstract class FocusSplitterAction(private val side: Side, template: Template) : ShardAction(template) {
     override fun doUpdate(event: AnActionEvent) =
         event.editorWindow.let {
             when {
@@ -18,11 +18,8 @@ class FocusSplitterAction(private val side: Side, template: Template) : ShardAct
         event.editorWindow?.getNeighbor(side)?.requestFocus(true)
     }
 
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        val LEFT = FocusSplitterAction(Side.LEFT, Template("action.focus.splitter.left.text"))
-        val TOP = FocusSplitterAction(Side.TOP, Template("action.focus.splitter.top.text"))
-        val RIGHT = FocusSplitterAction(Side.RIGHT, Template("action.focus.splitter.right.text"))
-        val BOTTOM = FocusSplitterAction(Side.BOTTOM, Template("action.focus.splitter.bottom.text"))
-    }
+    class Left : FocusSplitterAction(Side.LEFT, Template("action.focus.splitter.left.text"))
+    class Top : FocusSplitterAction(Side.TOP, Template("action.focus.splitter.top.text"))
+    class Right : FocusSplitterAction(Side.RIGHT, Template("action.focus.splitter.right.text"))
+    class Bottom : FocusSplitterAction(Side.BOTTOM, Template("action.focus.splitter.bottom.text"))
 }

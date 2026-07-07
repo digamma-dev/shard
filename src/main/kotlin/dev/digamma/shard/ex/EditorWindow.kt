@@ -4,6 +4,7 @@ import com.intellij.openapi.fileEditor.ex.FileEditorOpenRequest
 import com.intellij.openapi.fileEditor.impl.EditorComposite
 import com.intellij.openapi.fileEditor.impl.EditorWindow
 import com.intellij.openapi.fileEditor.impl.EditorWindowHolder
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Splitter
 import dev.digamma.shard.ShardFocusManager
 import dev.digamma.shard.ShardSettings
@@ -79,11 +80,10 @@ fun EditorWindow.getNearestNeighbor(side: Side): EditorWindow? {
     return (target as? EditorWindowHolder)?.editorWindow
 }
 
-@Suppress("UnstableApiUsage")
-fun EditorWindow.moveComposite(composite: EditorComposite, target: EditorWindow) {
+fun EditorWindow.moveComposite(project: Project, composite: EditorComposite, target: EditorWindow) {
     closeFile(composite.file, disposeIfNeeded = true, transferFocus = true)
 
-    target.manager.openFile(
+    project.fileEditorManager.openFile(
         file = composite.file,
         options = FileEditorOpenRequest(
             targetWindow = target,

@@ -7,3 +7,6 @@ val JBEditorTabs.isNavigable
 
 val JBEditorTabs.allowsReordering
     get() = !isAlphabeticalMode()
+
+val JBEditorTabs.visibleInfos
+    get() = tabs.filterNot { it.isHidden }
