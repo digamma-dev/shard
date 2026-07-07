@@ -1,5 +1,6 @@
 package dev.digamma.shard.ex
 
+import com.intellij.openapi.fileEditor.ex.FileEditorOpenRequest
 import com.intellij.openapi.fileEditor.impl.EditorComposite
 import com.intellij.openapi.fileEditor.impl.EditorWindow
 import com.intellij.openapi.fileEditor.impl.EditorWindowHolder
@@ -76,6 +77,22 @@ fun EditorWindow.getNearestNeighbor(side: Side): EditorWindow? {
     }
 
     return (target as? EditorWindowHolder)?.editorWindow
+}
+
+fun EditorWindow.moveComposite(composite: EditorComposite, target: EditorWindow) {
+    closeFile(composite.file, disposeIfNeeded = true, transferFocus = true)
+
+    target.manager.openFile(
+        file = composite.file,
+        options = FileEditorOpenRequest(
+            targetWindow = target,
+            pin = composite.isPinned,
+            requestFocus = true,
+            selectAsCurrent = true
+        )
+    )
+
+    if (composite.isPinned) target.setFilePinned(composite.file, true)
 }
 
 fun EditorWindow.splitComposite(composite: EditorComposite, side: Side, move: Boolean) {

@@ -3,10 +3,7 @@ package dev.digamma.shard
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.extensions.PluginId
-import dev.digamma.shard.action.FocusSplitterAction
-import dev.digamma.shard.action.MoveSplitterAction
-import dev.digamma.shard.action.ShardAction
-import dev.digamma.shard.action.SplitAction
+import dev.digamma.shard.action.*
 import org.intellij.lang.annotations.Language
 
 object ShardActionManager {
@@ -40,6 +37,11 @@ object ShardActionManager {
             registerAction("SplitAndMove.Top", SplitAction.MOVE_TOP)
             replaceAction("MoveTabRight", SplitAction.MOVE_RIGHT)
             replaceAction("MoveTabDown", SplitAction.MOVE_BOTTOM)
+
+            registerAction("MoveTabToSplitter.Left", MoveTabToSplitterAction.LEFT)
+            registerAction("MoveTabToSplitter.Top", MoveTabToSplitterAction.TOP)
+            registerAction("MoveTabToSplitter.Right", MoveTabToSplitterAction.RIGHT)
+            registerAction("MoveTabToSplitter.Bottom", MoveTabToSplitterAction.BOTTOM)
         }
     }
 }

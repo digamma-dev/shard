@@ -7,6 +7,7 @@ import com.intellij.openapi.components.*
 class ShardSettings : SimplePersistentStateComponent<ShardSettings.State>(State()) {
     class State : BaseState() {
         var focusStrategy by enum(FocusStrategy.LATEST)
+        var splitOnMove by property(true)
     }
 
     companion object {
