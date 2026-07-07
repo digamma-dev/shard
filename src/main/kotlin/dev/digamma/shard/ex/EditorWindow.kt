@@ -79,6 +79,7 @@ fun EditorWindow.getNearestNeighbor(side: Side): EditorWindow? {
     return (target as? EditorWindowHolder)?.editorWindow
 }
 
+@Suppress("UnstableApiUsage")
 fun EditorWindow.moveComposite(composite: EditorComposite, target: EditorWindow) {
     closeFile(composite.file, disposeIfNeeded = true, transferFocus = true)
 

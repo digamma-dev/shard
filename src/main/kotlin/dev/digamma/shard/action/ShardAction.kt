@@ -4,7 +4,11 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.impl.EditorWindow
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.ui.tabs.JBTabsEx
+import com.intellij.ui.tabs.impl.JBEditorTabs
 import dev.digamma.shard.ShardBundle
+import dev.digamma.shard.ex.ancestors
+import dev.digamma.shard.ex.isNavigable
 
 abstract class ShardAction(template: Template) : DumbAwareAction() {
     protected enum class State { HIDDEN, DISABLED, ENABLED }
@@ -38,3 +42,9 @@ abstract class ShardAction(template: Template) : DumbAwareAction() {
 
 internal val AnActionEvent.editorWindow
     get() = getData(EditorWindow.DATA_KEY)
+
+internal val AnActionEvent.editorTabs
+    get() = (getData(JBTabsEx.NAVIGATION_ACTIONS_KEY) as? JBEditorTabs)?.let { tabs ->
+        if (tabs.isNavigable) tabs
+        else tabs.ancestors.filterIsInstance<JBEditorTabs>().firstOrNull { it.isNavigable }
+    }
