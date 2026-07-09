@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          free-disk-space: true
+
+      - name: Run Gradle Task
+        run: ./gradlew buildPlugin
+
+  test:
+    name: Test Plugin
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          free-disk-space: true
+
+      - name: Run Gradle Task
+        run: ./gradlew check
+
+  verify:
+    name: Verify Plugin
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          free-disk-space: true
+
+      - name: Run Gradle Task
+        run: ./gradlew verifyPlugin
+
+      - name: Upload Results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: PluginVerifier Results
+          path: build/reports/pluginVerifier

@@ -1,0 +1,54 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of the release"
+        required: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - id: app-token
+        name: Create GitHub App Token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.DIGAMMA_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.DIGAMMA_BOT_PRIVATE_KEY }}
+
+      - name: Checkout Source
+        uses: actions/checkout@v7
+        with:
+          ref: dev
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Update Version
+        run: sed -i "s/^plugin.version=.*/plugin.version=$VERSION/" gradle.properties
+
+      - name: Patch Changelog
+        run: ./gradlew patchChangelog
+
+      - name: Extract Release Notes
+        run: ./gradlew getChangelog --output-file=$RUNNER_TEMP/NOTES.md
+
+      - name: Commit Changes
+        run: |
+          git config user.name "digamma-bot[bot]"
+          git config user.email "4260078+digamma-bot[bot]@users.noreply.github.com"
+          
+          git switch -c "release/$VERSION"
+          git commit -am "chore: prepare release $VERSION"
+          git push -u origin "release/$VERSION"
+
+      - name: Open Pull Request
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh pr create -B main -H "release/$VERSION" -t "Release $VERSION" -F $RUNNER_TEMP/NOTES.md

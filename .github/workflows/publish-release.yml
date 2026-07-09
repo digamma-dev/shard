@@ -1,0 +1,54 @@
+name: Publish Release
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: ${{ github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'release/') }}
+    runs-on: ubuntu-latest
+    environment: marketplace
+    steps:
+      - id: app-token
+        name: Create GitHub App Token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.DIGAMMA_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.DIGAMMA_BOT_PRIVATE_KEY }}
+
+      - name: Checkout Source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          free-disk-space: true
+
+      - name: Read Version
+        run: |
+          echo "VERSION=$(./gradlew properties --property plugin.version -q --console=plain | sed -nE 's/^plugin\.version: (.+)/\1/p')" >> $GITHUB_ENV
+
+      - name: Extract Release Notes
+        run: ./gradlew getChangelog --output-file=$RUNNER_TEMP/NOTES.md
+
+      - name: Publish to JetBrains Marketplace
+        run: ./gradlew publishPlugin
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh release create "v$VERSION" build/distributions/* -t "v$VERSION" -F $RUNNER_TEMP/NOTES.md --target ${{ github.event.pull_request.merge_commit_sha }}

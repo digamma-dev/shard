@@ -1,4 +1,5 @@
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id("org.jetbrains.changelog") version "2.5.0"
@@ -24,6 +25,7 @@ repositories {
 dependencies {
     intellijPlatform {
         intellijIdea(providers.gradleProperty("platform.version"))
+        testFramework(TestFrameworkType.Platform)
     }
 }
 
@@ -41,12 +43,6 @@ intellijPlatform {
         ideaVersion {
             sinceBuild = providers.gradleProperty("plugin.since.build")
             untilBuild = provider { null }
-        }
-    }
-
-    pluginVerification {
-        ides {
-            recommended()
         }
     }
 }
