@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0
+
 ### Added
 
 - Actions to focus neighbouring splitter in any direction.
