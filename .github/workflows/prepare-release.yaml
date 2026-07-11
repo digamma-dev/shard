@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew patchChangelog
 
       - name: Extract Release Notes
-        run: ./gradlew getChangelog --output-file=$RUNNER_TEMP/NOTES.md
+        run: ./gradlew getChangelog --no-header --output-file=$RUNNER_TEMP/NOTES.md
 
       - name: Commit Changes
         run: |
