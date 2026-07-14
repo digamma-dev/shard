@@ -11,7 +11,7 @@ group = providers.gradleProperty("plugin.group").get()
 version = providers.gradleProperty("plugin.version").get()
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(21)
 }
 
 repositories {
