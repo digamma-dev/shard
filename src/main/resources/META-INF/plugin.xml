@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="true">
     <resource-bundle>messages.ShardBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Require IDE restart for the plugin to take effect.
+
 ## 1.0.0
 
 ### Added
